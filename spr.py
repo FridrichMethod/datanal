@@ -234,13 +234,13 @@ class SPRAffinity:
         df = self.affinity_data
         x_data: np.ndarray = np.array(df.iloc[:, 0].values)
         y_data: np.ndarray = np.array(df.iloc[:, 1].values)
-        unit, factor = auto_units(x_data.mean())
+        new_unit, factor = auto_units(x_data.mean())
 
         # Fit affinity
         fit = SPR.langmuir_fit(x_data, y_data)
         if any(p is None for p in fit):
             warn(f"{os.path.basename(self._affinity_file)} is not fitted successfully.")
-            return x_data * factor, y_data, None, None, None, None, unit, factor
+            return x_data * factor, y_data, None, None, None, None, new_unit, factor
 
         popt, pcov = fit
 
@@ -271,7 +271,7 @@ class SPRAffinity:
             y_fit,
             K_d_mean * factor,
             K_d_std * factor,
-            unit,
+            new_unit,
             factor,
         )
 
@@ -519,9 +519,7 @@ class SPRCurves:
         # Filter the sharp peaks using signal filter
         y_data_max = medfilt(df_y.values.T.flatten(), max_filter_order).max()
 
-        for i, (quant, old_unit) in enumerate(conc):
-            new_unit, factor = auto_units(quant, old_unit)
-            quant *= factor
+        for i, (quant, new_unit) in enumerate(conc):
             x_data: np.ndarray = np.array(df_x.iloc[:, i].values)
             y_data: np.ndarray = np.array(df_y.iloc[:, i].values)
             mask = (x_data >= x_lower_bound) & (x_data <= x_upper_bound)

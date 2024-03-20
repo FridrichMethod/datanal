@@ -99,7 +99,7 @@ def auto_units(quant: float, old_unit: str = "M") -> tuple[str, float]:
 
     Returns
     -------
-    tuple[str, float]
+    new_unit, factor : tuple[str, float]
         The converted unit and the conversion factor.
     """
 
