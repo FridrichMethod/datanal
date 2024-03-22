@@ -29,6 +29,7 @@ The affinity file should end with "a.txt"; the curves file should end with "c.tx
 
 import os
 import argparse
+import logging
 from io import StringIO
 from typing import Any
 from warnings import warn
@@ -38,7 +39,7 @@ import pandas as pd
 
 # import matplotlib as mpl
 import matplotlib.pyplot as plt
-import seaborn as sns
+# import seaborn as sns
 from scipy.optimize import curve_fit
 from scipy.signal import medfilt
 
@@ -345,9 +346,9 @@ class SPRAffinity:
 
         # Save figure
         output_file = os.path.splitext(self._affinity_file)[0] + ".png"
-        plt.savefig(output_file)
-        print(f"Successfully saved {os.path.basename(output_file)}")
+        logging.info("Successfully saved %s", os.path.basename(output_file))
 
+        plt.savefig(output_file)
         plt.close(fig)
 
 
@@ -574,7 +575,7 @@ class SPRCurves:
         # Save figure
         output_file = os.path.splitext(self._curves_file)[0] + ".png"
         plt.savefig(output_file)
-        print(f"Successfully saved {os.path.basename(output_file)}")
+        logging.info("Successfully saved %s", os.path.basename(output_file))
 
         plt.close(fig)
 
