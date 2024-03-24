@@ -36,15 +36,11 @@ from warnings import warn
 
 import numpy as np
 import pandas as pd
-
-# import matplotlib as mpl
 import matplotlib.pyplot as plt
-# import seaborn as sns
 from scipy.optimize import curve_fit
 from scipy.signal import medfilt
 
 # from scipy.signal import savgol_filter
-
 
 from ._utils import auto_style, auto_ticks, auto_units
 
@@ -519,7 +515,7 @@ class SPRCurves:
         conc = self.concentrations
         # Filter the sharp peaks using signal filter
         y_data_max = medfilt(df_y.values.T.flatten(), max_filter_order).max()
-
+        # Auto detect the filter order
         for i, (quant, new_unit) in enumerate(conc):
             x_data: np.ndarray = np.array(df_x.iloc[:, i].values)
             y_data: np.ndarray = np.array(df_y.iloc[:, i].values)
@@ -539,7 +535,6 @@ class SPRCurves:
                 warn(
                     f"Concentration {quant:.2f} {new_unit} in {os.path.basename(self._curves_file)} has reached the max filter order."
                 )
-
             # Plot one SPR curve each time
             ax.plot(
                 x_between,
