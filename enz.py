@@ -1,5 +1,16 @@
+import os
+import argparse
+from warnings import warn
+
 import numpy as np
 import pandas as pd
+
+# import matplotlib as mpl
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.optimize import curve_fit
+
+from ._utils import auto_style, auto_ticks, auto_units
 
 class Enzyme:
     @staticmethod
