@@ -1,6 +1,6 @@
 """Utility functions for the datanal package."""
 
-from typing import Any
+from typing import Any, Sequence
 from warnings import warn
 
 import matplotlib.pyplot as plt
@@ -12,7 +12,7 @@ from matplotlib.axes import Axes
 def auto_style(
     rc_mplstyle: dict[str, Any] | None = None,
     fname_mplstyle: str | None = None,
-    palette_snsstyle: str | list[str] | None = None,
+    palette_snsstyle: str | Sequence[str] | None = None,
 ) -> None:
     """Initialize the matplotlib and seaborn styles.
 
@@ -22,13 +22,14 @@ def auto_style(
         The matplotlib style for rcParams.
     fname_mplstyle : str | None
         The matplotlib style for figure.
-    palette_snsstyle : str | list[str] | None
-        The seaborn style for palette.
+    palette_snsstyle : str | Sequence[str] | None
+        The seaborn palette style.
 
     Returns
     -------
     None
     """
+
     import datanal  # NECESSARY for importing the custom styles
 
     plt.style.use("datanal.GraphPadPrism")
