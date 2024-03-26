@@ -1,5 +1,6 @@
 import os
 import argparse
+from typing import Any
 from warnings import warn
 
 import numpy as np
@@ -161,3 +162,54 @@ class Enz:
         ...
 
         return popt, pcov
+class EnzPlot:
+    def __init__(
+        self,
+        affinity_file: str,
+        *,
+        rc_mplstyle: dict[str, Any] | None = None,
+        fname_mplstyle: str | None = None,
+        palette_snsstyle: str | list[str] | None = None,
+    ) -> None:
+        """Initialize the matplotlib and seaborn styles and the affinity file.
+
+        Parameters
+        ----------
+        affinity_file : str
+            The enzyme data file.
+        rc_mplstyle : dict[str, Any] | None
+            The matplotlib style for rcParams.
+        fname_mplstyle : str | None
+            The matplotlib style for figure.
+        palette_snsstyle : str | list[str] | None
+            The seaborn style for palette.
+
+        Returns
+        -------
+        None
+        """
+
+        auto_style(rc_mplstyle, fname_mplstyle, palette_snsstyle)
+
+        if os.path.exists(affinity_file):
+            self._affinity_file = affinity_file
+        else:
+            raise FileNotFoundError(f"{affinity_file} does not exist.")
+
+    def __repr__(self) -> str:
+        """Return the name of the affinity file."""
+
+        return os.path.basename(self._affinity_file)
+
+    def __len__(self) -> int:
+        """Return the number of data points in the affinity file."""
+
+        return len(self.affinity_data)
+
+    @property
+    def affinity_data(self) -> pd.DataFrame:
+        """Read the first two data frames (concentration and response) of the affinity file."""
+
+        df = pd.read_excel(self._affinity_file)
+
+        return ...

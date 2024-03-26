@@ -31,7 +31,7 @@ import os
 import argparse
 import logging
 from io import StringIO
-from typing import Any
+from typing import Unpack
 from warnings import warn
 
 import numpy as np
@@ -581,7 +581,7 @@ def affinity(
     rc_mplstyle: dict[str, Any] | None = None,
     fname_mplstyle: str | None = None,
     palette_snsstyle: str | list[str] | None = None,
-    **kwargs: Any,
+    **kwargs,
 ) -> None:
     """Plot the affinity data.
 
@@ -595,7 +595,7 @@ def affinity(
         The matplotlib style for figure.
     palette_snsstyle : str | list[str] | None
         The seaborn style for palette.
-    **kwargs : Any
+    **kwargs : 
         The keyword arguments for the affinity plot, see below.
 
     Keyword Arguments
