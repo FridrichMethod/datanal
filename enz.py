@@ -1,13 +1,12 @@
-import os
 import argparse
+import os
 from typing import Any
 from warnings import warn
 
-import numpy as np
-import pandas as pd
-
 # import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import seaborn as sns
 from scipy.optimize import curve_fit
 
@@ -71,10 +70,10 @@ class Enz:
             The inhibition rate.
         """
 
-        if monotonic not in {-1, 1}:    
+        if monotonic not in {-1, 1}:
             raise ValueError("Monotonicity must be either -1 or 1.")
-        
-        return I_min + (I_max - I_min) / (1 + (IC50 / I) ** (hill_coeff*monotonic))
+
+        return I_min + (I_max - I_min) / (1 + (IC50 / I) ** (hill_coeff * monotonic))
 
     @staticmethod
     def michaelis_menten_fit(
@@ -119,7 +118,7 @@ class Enz:
         ...
 
         return popt, pcov
-    
+
     @staticmethod
     def sigmoidal_fit(
         x_data: np.ndarray, y_data: np.ndarray
@@ -162,6 +161,8 @@ class Enz:
         ...
 
         return popt, pcov
+
+
 class EnzPlot:
     def __init__(
         self,

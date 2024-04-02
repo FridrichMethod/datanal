@@ -27,22 +27,22 @@ The SPR curves data should be in the following format (directly export from Biac
 The affinity file should end with "a.txt"; the curves file should end with "c.txt".
 """
 
-import os
 import argparse
 import logging
+import os
 from io import StringIO
-from typing import Unpack
+from typing import Any, Unpack
 from warnings import warn
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from scipy.signal import medfilt
 
-# from scipy.signal import savgol_filter
-
 from ._utils import auto_style, auto_ticks, auto_units
+
+# from scipy.signal import savgol_filter
 
 
 class SPR:
@@ -595,7 +595,7 @@ def affinity(
         The matplotlib style for figure.
     palette_snsstyle : str | list[str] | None
         The seaborn style for palette.
-    **kwargs : 
+    **kwargs :
         The keyword arguments for the affinity plot, see below.
 
     Keyword Arguments
@@ -773,4 +773,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    main()
     main()
