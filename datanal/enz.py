@@ -10,7 +10,7 @@ import pandas as pd
 import seaborn as sns
 from scipy.optimize import curve_fit
 
-from ._utils import auto_style, auto_ticks, auto_units
+from datanal._utils import auto_style, auto_ticks, auto_units
 
 
 class Enz:
