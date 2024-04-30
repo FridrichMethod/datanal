@@ -452,10 +452,7 @@ class SPRCurves:
             quant *= factor
             return quant, new_unit
 
-        df = self.curves_data
-        conc = list(map(_extract_conc, df.iloc[:, 0::2].columns))
-
-        return conc
+        return list(map(_extract_conc, self.curves_data.iloc[:, 0::2].columns))
 
     def curves_plot(
         self,
@@ -773,5 +770,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
     main()
