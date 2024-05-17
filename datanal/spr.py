@@ -337,8 +337,8 @@ class SPRAffinity:
             )
 
         # Set labels
-        ax.set_xlabel(f"Concentration/{unit}")
-        ax.set_ylabel("Response/RU")
+        ax.set_xlabel(f"Concentration ({unit})")
+        ax.set_ylabel("Response (RU)")
 
         # Save figure
         output_file = os.path.splitext(self._affinity_file)[0] + ".png"
@@ -536,7 +536,7 @@ class SPRCurves:
             ax.plot(
                 x_between,
                 y_filtered,
-                label=f"{quant:.2f} {new_unit}",
+                label=f"{quant:.1f} {new_unit}",
                 linewidth=line_width,
             )
 
@@ -544,8 +544,8 @@ class SPRCurves:
         ax.legend(bbox_to_anchor=(1 + legend_distance, 1))
 
         # Set labels
-        ax.set_xlabel("Time/s")
-        ax.set_ylabel("Response/RU")
+        ax.set_xlabel("Time (s)")
+        ax.set_ylabel("Response (RU)")
 
         # Set title
         fit = self.affinity_fit_
