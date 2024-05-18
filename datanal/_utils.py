@@ -28,6 +28,10 @@ def auto_style(
     Returns
     -------
     None
+
+    Notes
+    -----
+    Please put this function on the top of the script to enable global settings.
     """
 
     plt.style.use("datanal.GraphPadPrism")
@@ -61,6 +65,10 @@ def auto_ticks(
     Returns
     -------
     None
+
+    Notes
+    -----
+    Please put this function after the data are passed to the axis.
     """
 
     if x_lim is not None:
