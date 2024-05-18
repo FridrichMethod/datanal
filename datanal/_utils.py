@@ -74,6 +74,10 @@ def auto_ticks(
     else:
         ax.xaxis.set_minor_locator(ticker.AutoMinorLocator(5))
 
+    ax.set_xlim(
+        (ax.get_xticks()[0], ax.get_xticks()[-1])
+    )  # For viewing incomplete ticks
+
     if y_lim is not None:
         ax.set_ylim(y_lim)
     ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=6, min_n_ticks=3))
@@ -84,6 +88,10 @@ def auto_ticks(
         ax.yaxis.set_minor_locator(ticker.AutoMinorLocator(4))
     else:
         ax.yaxis.set_minor_locator(ticker.AutoMinorLocator(5))
+
+    ax.set_ylim(
+        (ax.get_yticks()[0], ax.get_yticks()[-1])
+    )  # For viewing incomplete ticks
 
 
 def auto_units(quant: float, old_unit: str = "M") -> tuple[str, float]:
