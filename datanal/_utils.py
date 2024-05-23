@@ -83,7 +83,7 @@ def auto_ticks(
         ax.xaxis.set_minor_locator(ticker.AutoMinorLocator(5))
 
     # For viewing incomplete ticks
-    if (ax.get_xticks()[0] != ax.get_xlim()[0]) or (ax.get_xticks()[-1] != ax.get_xlim()[-1]):
+    if x_lim is None and (ax.get_xticks()[0] != ax.get_xlim()[0]) or (ax.get_xticks()[-1] != ax.get_xlim()[-1]):
         ax.set_xlim(
             (ax.get_xticks()[0], ax.get_xticks()[-1])
         )
@@ -100,7 +100,7 @@ def auto_ticks(
         ax.yaxis.set_minor_locator(ticker.AutoMinorLocator(5))
 
     # For viewing incomplete ticks
-    if (ax.get_yticks()[0] != ax.get_ylim()[0]) or (ax.get_yticks()[-1] != ax.get_ylim()[-1]):
+    if y_lim is None and (ax.get_yticks()[0] != ax.get_ylim()[0]) or (ax.get_yticks()[-1] != ax.get_ylim()[-1]):
         ax.set_ylim(
             (ax.get_yticks()[0], ax.get_yticks()[-1])
         )
