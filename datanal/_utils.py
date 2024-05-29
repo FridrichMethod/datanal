@@ -1,9 +1,11 @@
 """Utility functions for the datanal package."""
 
+from itertools import cycle
 from typing import Any, Sequence
 from warnings import warn
 
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
 from matplotlib import ticker
 from matplotlib.axes import Axes
@@ -13,6 +15,7 @@ def auto_style(
     rc_mplstyle: dict[str, Any] | None = None,
     fname_mplstyle: str | None = None,
     palette_snsstyle: str | Sequence[str] | None = None,
+    n_colors: int | None = None,
 ) -> None:
     """Initialize the matplotlib and seaborn styles.
 
@@ -24,6 +27,8 @@ def auto_style(
         The matplotlib style for figure.
     palette_snsstyle : str | Sequence[str] | None
         The seaborn palette style.
+    n_colors : int | None
+        The number of colors to generate.
 
     Returns
     -------
@@ -35,10 +40,10 @@ def auto_style(
     """
 
     plt.style.use("datanal.GraphPadPrism")
-    sns.set_palette("bright")
+    sns.set_palette("bright", n_colors=n_colors)
 
     if palette_snsstyle is not None:
-        sns.set_palette(palette_snsstyle)
+        sns.set_palette(palette_snsstyle, n_colors=n_colors)
     if fname_mplstyle is not None:
         plt.style.use(fname_mplstyle)
     if rc_mplstyle is not None:
@@ -48,8 +53,10 @@ def auto_style(
 def auto_ticks(
     ax: Axes,
     *,
-    x_lim: tuple[float, float] | None = None,
-    y_lim: tuple[float, float] | None = None,
+    left: float | None = None,
+    right: float | None = None,
+    bottom: float | None = None,
+    top: float | None = None,
 ) -> None:
     """Set the major and minor ticks of an axis automatically.
 
@@ -57,10 +64,14 @@ def auto_ticks(
     ----------
     ax : Axes
         The axis to be set.
-    x_lim : tuple[float, float] | None, optional
-        The limits of the x-axis, by default None.
-    y_lim : tuple[float, float] | None, optional
-        The limits of the y-axis, by default None.
+    left : float | None, optional
+        The left limit of the x-axis, by default None.
+    right : float | None, optional
+        The right limit of the x-axis, by default None.
+    bottom : float | None, optional
+        The bottom limit of the y-axis, by default None.
+    top : float | None, optional
+        The top limit of the y-axis, by default None.
 
     Returns
     -------
@@ -71,8 +82,12 @@ def auto_ticks(
     Please put this function after the data are passed to the axis.
     """
 
-    if x_lim is not None:
-        ax.set_xlim(x_lim)
+    # Set the major and minor ticks of the x-axis
+    if left is not None:
+        ax.set_xlim(left=left)
+    if right is not None:
+        ax.set_xlim(right=right)
+
     ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=6, min_n_ticks=3))
     x_tick_num = len(ax.get_xticks())
     if x_tick_num >= 6:
@@ -83,13 +98,16 @@ def auto_ticks(
         ax.xaxis.set_minor_locator(ticker.AutoMinorLocator(5))
 
     # For viewing incomplete ticks
-    if x_lim is None and (ax.get_xticks()[0] != ax.get_xlim()[0]) or (ax.get_xticks()[-1] != ax.get_xlim()[-1]):
-        ax.set_xlim(
-            (ax.get_xticks()[0], ax.get_xticks()[-1])
-        )
+    if left is None and (ax.get_xticks()[0] != ax.get_xlim()[0]):
+        ax.set_xlim(left=ax.get_xticks()[0])
+    if right is None and (ax.get_xticks()[-1] != ax.get_xlim()[-1]):
+        ax.set_xlim(right=ax.get_xticks()[-1])
 
-    if y_lim is not None:
-        ax.set_ylim(y_lim)
+    # Set the major and minor ticks of the y-axis
+    if bottom is not None:
+        ax.set_ylim(bottom=bottom)
+    if top is not None:
+        ax.set_ylim(top=top)
     ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=6, min_n_ticks=3))
     y_tick_num = len(ax.get_yticks())
     if y_tick_num >= 6:
@@ -100,10 +118,10 @@ def auto_ticks(
         ax.yaxis.set_minor_locator(ticker.AutoMinorLocator(5))
 
     # For viewing incomplete ticks
-    if y_lim is None and (ax.get_yticks()[0] != ax.get_ylim()[0]) or (ax.get_yticks()[-1] != ax.get_ylim()[-1]):
-        ax.set_ylim(
-            (ax.get_yticks()[0], ax.get_yticks()[-1])
-        )
+    if bottom is None and (ax.get_yticks()[0] != ax.get_ylim()[0]):
+        ax.set_ylim(bottom=ax.get_yticks()[0])
+    if top is None and (ax.get_yticks()[-1] != ax.get_ylim()[-1]):
+        ax.set_ylim(top=ax.get_yticks()[-1])
 
 
 def auto_units(quant: float, old_unit: str = "M") -> tuple[str, float]:

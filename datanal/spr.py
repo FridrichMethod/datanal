@@ -163,10 +163,6 @@ class SPRAffinity:
     def __init__(
         self,
         affinity_file: str,
-        *,
-        rc_mplstyle: dict[str, Any] | None = None,
-        fname_mplstyle: str | None = None,
-        palette_snsstyle: str | list[str] | None = None,
     ) -> None:
         """Initialize the matplotlib and seaborn styles and the affinity file.
 
@@ -174,19 +170,11 @@ class SPRAffinity:
         ----------
         affinity_file : str
             The affinity data file.
-        rc_mplstyle : dict[str, Any] | None
-            The matplotlib style for rcParams.
-        fname_mplstyle : str | None
-            The matplotlib style for figure.
-        palette_snsstyle : str | list[str] | None
-            The seaborn style for palette.
 
         Returns
         -------
         None
         """
-
-        auto_style(rc_mplstyle, fname_mplstyle, palette_snsstyle)
 
         if os.path.exists(affinity_file):
             self._affinity_file = affinity_file
@@ -281,6 +269,9 @@ class SPRAffinity:
         marker_size: float = 16,
         line_color: str = "#FF0000",
         line_width: float = 2,
+        rc_mplstyle: dict[str, Any] | None = None,
+        fname_mplstyle: str | None = None,
+        palette_snsstyle: str | list[str] | None = None,
     ) -> None:
         """Plot the affinity data and the fitted curve.
 
@@ -298,11 +289,19 @@ class SPRAffinity:
             The color of the fitted curve.
         line_width : float, optional
             The width of the fitted curve.
+        rc_mplstyle : dict[str, Any] | None
+            The matplotlib style for rcParams.
+        fname_mplstyle : str | None
+            The matplotlib style for figure.
+        palette_snsstyle : str | list[str] | None
+            The seaborn style for palette.
 
         Returns
         -------
         None
         """
+
+        auto_style(rc_mplstyle, fname_mplstyle, palette_snsstyle)
 
         # Initializing
         fig, ax = plt.subplots(figsize=fig_size, dpi=dpi)
@@ -374,10 +373,6 @@ class SPRCurves:
         self,
         curves_file: str,
         affinity_file: str | None = None,
-        *,
-        rc_mplstyle: dict[str, Any] | None = None,
-        fname_mplstyle: str | None = None,
-        palette_snsstyle: str | list[str] | None = None,
     ) -> None:
         """Initialize the matplotlib and seaborn styles and the curves file.
 
@@ -387,12 +382,6 @@ class SPRCurves:
             The curves data file.
         affinity_file : str | None
             The affinity data file.
-        rc_mplstyle : dict[str, Any] | None
-            The matplotlib style for rcParams.
-        fname_mplstyle : str | None
-            The matplotlib style for figure.
-        palette_snsstyle : str | list[str] | None
-            The seaborn style for palette.
 
         Returns
         -------
@@ -404,7 +393,6 @@ class SPRCurves:
         else:
             self.affinity_fit_ = SPRAffinity(affinity_file).affinity_fit()
 
-        auto_style(rc_mplstyle, fname_mplstyle, palette_snsstyle)
         if os.path.exists(curves_file):
             self._curves_file = curves_file
         else:
@@ -418,7 +406,7 @@ class SPRCurves:
     def __len__(self) -> int:
         """Return the number of curves in the curves file."""
 
-        return len(self.curves_data)
+        return len(self.concentrations)
 
     @property
     def curves_data(self) -> pd.DataFrame:
@@ -457,8 +445,8 @@ class SPRCurves:
     def curves_plot(
         self,
         *,
-        x_lower_bound: float = -50,
-        x_upper_bound: float = 200,
+        x_lower_bound: float | None = None,
+        x_upper_bound: float | None = None,
         min_filter_order: int = 7,
         max_filter_order: int = 31,
         peak_cutoff: float = 0.2,
@@ -466,15 +454,18 @@ class SPRCurves:
         dpi: float = 300,
         line_width: float = 2,
         legend_distance: float = 0.33,
+        rc_mplstyle: dict[str, Any] | None = None,
+        fname_mplstyle: str | None = None,
+        palette_snsstyle: str | list[str] | None = None,
     ) -> None:
         """Plot the SPR curves.
 
         Parameters
         ----------
-        x_lower_bound : float, optional
-            The lower bound of the x-axis.
-        x_upper_bound : float, optional
-            The upper bound of the x-axis.
+        x_lower_bound : float | None, optional
+            The lower bound of the x-axis, by default None.
+        x_upper_bound : float | None, optional
+            The upper bound of the x-axis, by default None.
         min_filter_order : int, optional
             The minimum filter order for the signal filter.
         max_filter_order : int, optional
@@ -489,11 +480,19 @@ class SPRCurves:
             The width of the SPR curves.
         legend_distance : float, optional
             The distance of the legend from the upper right corner.
+        rc_mplstyle : dict[str, Any] | None
+            The matplotlib style for rcParams.
+        fname_mplstyle : str | None
+            The matplotlib style for figure.
+        palette_snsstyle : str | list[str] | None
+            The seaborn style for palette.
 
         Returns
         -------
         None
         """
+
+        auto_style(rc_mplstyle, fname_mplstyle, palette_snsstyle, n_colors=len(self))
 
         # Initializing
         fig, ax = plt.subplots(figsize=fig_size, dpi=dpi)
@@ -502,7 +501,7 @@ class SPRCurves:
         df_y = df.iloc[:, 1::2]
 
         # Auto scale ticks
-        auto_ticks(ax, x_lim=(x_lower_bound, x_upper_bound))
+        auto_ticks(ax, left=x_lower_bound, right=x_upper_bound)
 
         # Plot SPR curves
         if max_filter_order % 2 == 0 or max_filter_order <= min_filter_order:
@@ -516,7 +515,15 @@ class SPRCurves:
         for i, (quant, new_unit) in enumerate(conc):
             x_data: np.ndarray = np.array(df_x.iloc[:, i].values)
             y_data: np.ndarray = np.array(df_y.iloc[:, i].values)
-            mask = (x_data >= x_lower_bound) & (x_data <= x_upper_bound)
+            mask = (
+                (x_data >= -np.inf)
+                if x_lower_bound is None
+                else (x_data >= x_lower_bound)
+            ) & (
+                (x_data <= np.inf)
+                if x_upper_bound is None
+                else (x_data <= x_upper_bound)
+            )
             x_between: np.ndarray = x_data[mask]
             y_between: np.ndarray = y_data[mask]
             y_filtered = medfilt(y_between, min_filter_order)
@@ -574,11 +581,7 @@ class SPRCurves:
 
 def affinity(
     affinity_dir: str,
-    *,
-    rc_mplstyle: dict[str, Any] | None = None,
-    fname_mplstyle: str | None = None,
-    palette_snsstyle: str | list[str] | None = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> None:
     """Plot the affinity data.
 
@@ -586,12 +589,6 @@ def affinity(
     ----------
     affinity_dir : str
         The directory containing the affinity data files.
-    rc_mplstyle : dict[str, Any] | None
-        The matplotlib style for rcParams.
-    fname_mplstyle : str | None
-        The matplotlib style for figure.
-    palette_snsstyle : str | list[str] | None
-        The seaborn style for palette.
     **kwargs :
         The keyword arguments for the affinity plot, see below.
 
@@ -609,6 +606,12 @@ def affinity(
         The color of the fitted curve.
     line_width : float, optional
         The width of the fitted curve.
+    rc_mplstyle : dict[str, Any] | None
+        The matplotlib style for rcParams.
+    fname_mplstyle : str | None
+        The matplotlib style for figure.
+    palette_snsstyle : str | list[str] | None
+        The seaborn style for palette.
 
     Returns
     -------
@@ -619,19 +622,12 @@ def affinity(
         if file.endswith("a.txt"):
             spr_affinity = SPRAffinity(
                 os.path.join(affinity_dir, file),
-                rc_mplstyle=rc_mplstyle,
-                fname_mplstyle=fname_mplstyle,
-                palette_snsstyle=palette_snsstyle,
             )
             spr_affinity.affinity_plot(**kwargs)
 
 
 def curves(
     curves_dir: str,
-    *,
-    rc_mplstyle: dict[str, Any] | None = None,
-    fname_mplstyle: str | None = None,
-    palette_snsstyle: str | list[str] | None = None,
     **kwargs: Any,
 ) -> None:
     """Plot the SPR curves.
@@ -640,12 +636,6 @@ def curves(
     ----------
     curves_dir : str
         The directory containing the curves data files.
-    rc_mplstyle : dict[str, Any] | None
-        The matplotlib style for rcParams.
-    fname_mplstyle : str | None
-        The matplotlib style for figure.
-    palette_snsstyle : str | list[str] | None
-        The seaborn style for palette.
     **kwargs : Any
         The keyword arguments for the curves plot, see below.
 
@@ -669,6 +659,12 @@ def curves(
         The width of the SPR curves.
     legend_distance : float, optional
         The distance of the legend from the upper right corner.
+    rc_mplstyle : dict[str, Any] | None
+        The matplotlib style for rcParams.
+    fname_mplstyle : str | None
+        The matplotlib style for figure.
+    palette_snsstyle : str | list[str] | None
+        The seaborn style for palette.
 
     Returns
     -------
@@ -682,16 +678,10 @@ def curves(
                 spr_curves = SPRCurves(
                     os.path.join(curves_dir, file),
                     affinity_file,
-                    rc_mplstyle=rc_mplstyle,
-                    fname_mplstyle=fname_mplstyle,
-                    palette_snsstyle=palette_snsstyle,
                 )
             else:
                 spr_curves = SPRCurves(
                     os.path.join(curves_dir, file),
-                    rc_mplstyle=rc_mplstyle,
-                    fname_mplstyle=fname_mplstyle,
-                    palette_snsstyle=palette_snsstyle,
                 )
             spr_curves.curves_plot(**kwargs)
 
@@ -719,14 +709,12 @@ def main() -> None:
         "--lower",
         type=float,
         help="The lower bound of the x-axis in curves plot.",
-        default=-50,
     )
     parser.add_argument(
         "-u",
         "--upper",
         type=float,
         help="The upper bound of the x-axis in curves plot.",
-        default=200,
     )
     parser.add_argument(
         "-r",
@@ -761,11 +749,11 @@ def main() -> None:
     if args.curves is not None:
         curves(
             args.curves,
+            x_lower_bound=args.lower,
+            x_upper_bound=args.upper,
             rc_mplstyle=args.rc,
             fname_mplstyle=args.fname,
             palette_snsstyle=args.palette,
-            x_lower_bound=args.lower,
-            x_upper_bound=args.upper,
         )
 
 
