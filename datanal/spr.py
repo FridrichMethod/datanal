@@ -40,7 +40,7 @@ import pandas as pd
 from scipy.optimize import curve_fit
 from scipy.signal import medfilt
 
-from datanal._utils import auto_style, auto_ticks, auto_units
+from datanal.utils import auto_style, auto_ticks, auto_units
 
 # from scipy.signal import savgol_filter
 

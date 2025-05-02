@@ -13,3 +13,7 @@ datanal.mst: A module for microscale thermophoresis (MST) data analysis
 datanal.spr: A module for surface plasmon resonance (SPR) data analysis
 datanal.itc: A module for isothermal titration calorimetry (ITC) data analysis
 """
+
+__version__ = "1.3.1"
+__author__ = "Zhaoyang Li"
+__email__ = "zhaoyangli@stanford.edu"
